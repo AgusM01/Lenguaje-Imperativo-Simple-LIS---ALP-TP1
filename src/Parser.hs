@@ -50,6 +50,12 @@ lis = makeTokenParser
 -- Para este primer paso, especifica un TokenParser. La función makeTokenParser nos pide que le digamos
 -- cuales son los tokens. Me permite evitar que el usuario, por ejemplo, llame a una variable "skip" ya que 
 -- le dijimos que la misma es una palabra reservada del lenguaje. Se podria pensar como que los tokens tienen "tipos". 
+
+-- La gramática es ambigüa. La desambigüamos especificando orden de precedencia.
+-- Esa gramática tendra el problema de la recursión a izquierda.
+-- Para eso utilizaremos chainl1 :: ParserExp -> ParserSep -> Exp a 
+-- chainl1 crea el Exp y ademas arregla la recursión a izquierda.
+-- El orden de presendencia lo damos en el ParserSep. 
 -----------------------------------
 --- Parser de expresiones enteras
 -----------------------------------
