@@ -59,8 +59,26 @@ lis = makeTokenParser
 -----------------------------------
 --- Parser de expresiones enteras
 -----------------------------------
+
+-- Desambigüamos la gramática:
+-- intexp ::= intexp '+' term | intexp '-b' term | term
+-- iterm   ::= iterm '*' minus | iterm '/' minus | minus  
+-- minus  ::= '-u' mm | mm  
+-- mm     ::= nat | var | var '++' | var '--' | '('intexp')'  
+
 intexp :: Parser (Exp Int)
-intexp = undefined
+intexp =  chainl1 iterm sumRestParser -- chainl1 parsea AL MENOS 1, por lo que parseará term solo
+
+iterm :: Parser (Exp Int)
+iterm = chainl1 minus prodDivParser 
+
+minus :: Parser (Exp Int)
+minus = chainl1 mm uminParser 
+
+mm :: Parser (Exp Int)
+mm = try natParse <|> try varParse <|> try varPlusPlus <|> try varMinusMinus <|> parensParser
+
+            
 
 -- En algun momento tendremos que parsear variables.
 -- Utilizaremos la función identifier la cual le tenemos que pasar una identifiacion de token -> lis : v <- identifier lis
@@ -80,15 +98,49 @@ intexp = undefined
 --- Parser de expresiones booleanas
 ------------------------------------
 
+-- Desambigüamos la gramática
+-- boolexp  ::= boolexp '||' band | band 
+-- band     ::= band '&&' bnot | bnot 
+-- bnot     ::= '!' bop | bop  
+-- bop      ::= bop ('<' bdata | '>' bdata | '!=' bdata | '==' bdata) | bdata
+-- bdata    ::= 'true' | 'false' 
+
 boolexp :: Parser (Exp Bool)
-boolexp = undefined
+boolexp = chainl1 band orParser
+
+band :: Parser (Exp Bool) 
+band = chainl1 bnot andParser
+
+bnot :: Parser (Exp Bool) 
+bnot = chainl1 bop notParser
+
+bop :: Parser (Exp Bool)
+bop = chainl1 bdata opParser
+
+bdata :: Parser (Exp Bool)
+bdata = try (reservedNames lis "true") <|> reservedNames lis "false"
 
 -----------------------------------
 --- Parser de comandos
 -----------------------------------
 
+-- Desambigüamos la gramática
+-- comm     ::= comm ';' asig | asig 
+-- asig     ::= var '=' intexp | control 
+-- control  ::= 'skip' | ’if’ boolexp ’{’ comm ’}’| ’if’ boolexp ’{’ comm ’}’ ’else’ ’{’ comm ’}’ | ’repeat’ ’{’ comm ’}’ ’until’ boolexp
+
+
 comm :: Parser Comm
-comm = undefined
+comm = chainl1 asig semi -- parser de ';'
+
+asig :: Parser Comm 
+asig = try (do v <- varParse 
+               reservedOp lis "=" 
+               i <- intexp 
+               return (Eq v i)) <|> control
+
+control :: Parser Comm
+control = (try reservedNames lis "skip") <|> (try ifThenParser) <|> (try ifElseParser) <|> repParser
 
 ------------------------------------
 -- Función de parseo
