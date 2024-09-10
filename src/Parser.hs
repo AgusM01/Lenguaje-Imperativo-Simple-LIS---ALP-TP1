@@ -61,7 +61,7 @@ lis = makeTokenParser
 -----------------------------------
 
 -- Desambigüamos la gramática:
--- intexp ::= intexp '+' term | intexp '-b' term | term
+-- intexp ::= intexp '+' term | intexp '-' term | term
 -- iterm   ::= iterm '*' minus | iterm '/' minus | minus  
 -- minus  ::= '-u' mm | mm  
 -- mm     ::= nat | var | var '++' | var '--' | '('intexp')'  
@@ -78,22 +78,56 @@ minus = chainl1 mm uminParser
 mm :: Parser (Exp Int)
 mm = try natParse <|> try varParse <|> try varPlusPlus <|> try varMinusMinus <|> parensParser
 
-            
+sumRestParser :: Parser (Exp Int -> Exp Int -> Exp Int)
+sumRestParser = try (do reservedOp lis "+"
+                        return (\x y -> Plus x y))
+                    <|> do reservedOp lis "-"
+                           return (\x y -> Minus x y)
+
+prodDivParser :: Parser (Exp Int -> Exp Int -> Exp Int)
+sumRestParser = try (do reservedOp lis "*"
+                        return (\x y -> Times x y))
+                    <|> do reservedOp lis "/"
+                           return (\x y -> Div x y)
+
+natParse :: Parser (Exp Int) 
+natParse = do n <- natural lis
+              return (Const n)
+
+
+                   
+varPlusPlus :: Parser (Exp Int)
+varPlusPlus = do v <- identifier lis
+                 reservedOp lis "+"
+                 reservedOp lis "+"
+                 return (VarInc v)
+
+varMinusMinus :: Parser (Exp Int)
+varMinusMinus = do v <- identifier lis
+                   reservedOp lis "-"
+                   reservedOp lis "-"
+                   return (VarDec v)
+
+parensParser :: Parser (Exp Int) 
+parensParser =  do symbol "("
+                   i <- intexp
+                   symbol ")"
+                   return i
+
 
 -- En algun momento tendremos que parsear variables.
 -- Utilizaremos la función identifier la cual le tenemos que pasar una identifiacion de token -> lis : v <- identifier lis
 -- identifier toma la especificacion de tokens que da lis y generará un string. Aquí checkeara si por ejemplo la variable no es una palabra reservada.
 -- Si identifier lee una de las palabras reservadas de lis, falla.
 
--- variableParser :: Parser (Exp Int)
--- variableParser = do v <- identifier lis 
---                     return (Var v)
+variableParser :: Parser (Exp Int)
+variableParser = do v <- identifier lis 
+                    return (Var v)
 
 -- Parser de  - intexp
--- uminParser :: Parser (Exp Int)
--- uminParser = do reservedOp lis  "-"
---                 e <- intextp
---                 return (UMinus e) 
+uminParser :: Parser (Exp Int -> Exp Int)
+uminParser = do reservedOp lis  "-"
+                return (\e -> UMinus e) 
 ------------------------------------
 --- Parser de expresiones booleanas
 ------------------------------------
