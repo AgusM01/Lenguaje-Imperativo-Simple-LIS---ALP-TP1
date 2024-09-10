@@ -75,6 +75,9 @@ iterm = chainl1 minus prodDivParser
 minus :: Parser (Exp Int)
 minus = chainl1 mm uminParser 
 
+--minus :: Parser (Exp Int)
+--minus = try (do {reservedOp lis "-"; m <- mm; return (UMinus m)}) <|> (mm)
+
 mm :: Parser (Exp Int)
 mm = try natParse <|> try varParse <|> try varPlusPlus <|> try varMinusMinus <|> parensParser
 
@@ -139,6 +142,22 @@ uminParser = do reservedOp lis  "-"
 -- bop      ::= bop ('<' bdata | '>' bdata | '!=' bdata | '==' bdata) | bdata
 -- bdata    ::= 'true' | 'false' 
 
+
+orParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
+orParser = do {reservedOp lis "||"; return (\x y -> (Or x y))}
+				
+andParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
+andParser = do {reservedOp lis "&&"; return (\x y -> (And x y))}
+		
+notParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
+notParser = do {reservedOp lis "!"; x <- bop; return (Not x)}
+
+opParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
+opParser = try 	(reservedOp lis "<"; return (\x y -> (Lt x y))) <|>
+		(try reservedOp lis ">"; return (\x y -> (Gt x y)) <|>
+		(try reservedOp lis "=="; return (\x y -> (Eq x y)) <|>
+		(try reservedOp lis "!="; return (\x y -> (NEq x y)))))
+
 boolexp :: Parser (Exp Bool)
 boolexp = chainl1 band orParser
 
@@ -146,13 +165,13 @@ band :: Parser (Exp Bool)
 band = chainl1 bnot andParser
 
 bnot :: Parser (Exp Bool) 
-bnot = chainl1 bop notParser
+bnot = try notParser <|> bop
 
 bop :: Parser (Exp Bool)
 bop = chainl1 bdata opParser
 
 bdata :: Parser (Exp Bool)
-bdata = try (reservedNames lis "true") <|> reservedNames lis "false"
+bdata = try (reservedNames lis "true"; return BTrue) <|> (reservedNames lis "false"; return BFalse)
 
 -----------------------------------
 --- Parser de comandos
@@ -163,18 +182,52 @@ bdata = try (reservedNames lis "true") <|> reservedNames lis "false"
 -- asig     ::= var '=' intexp | control 
 -- control  ::= 'skip' | ’if’ boolexp ’{’ comm ’}’| ’if’ boolexp ’{’ comm ’}’ ’else’ ’{’ comm ’}’ | ’repeat’ ’{’ comm ’}’ ’until’ boolexp
 
+ifThenParser :: Parser (Comm)
+ifThenParser = 	do (reservedNames lis "if") 
+			b <- boolexp
+			symbol "{"
+			c <- comm
+			symbol "}"
+			return (IfThenElse b c Skip) -- mirar en AST, hay un pattern
+			 			
+	   
+ifElseParser :: Parser (Comm)
+ifElseParser = do (reservedNames lis "if") 
+			b <- boolexp
+			symbol "{" 
+			c1 <- comm
+			symbol "}"
+			symbol "{"
+			c2 <- comm
+			symbol "}"
+			return (IfThenElse b c1 c2) 
+
+repParser :: Parser (Comm)
+repParser = do (reservedNames lis "repeat")
+		symbol "{" 
+		c <- comm
+		symbol "}"
+		reservedNames lis "until"
+		b <- boolExp
+		return (RepeatUntil c b)
+		
+skipParser :: Parser (Comm)
+skipParser = do {reservedNames lis "skip"; return Skip}
+
+semiParser :: Parer (Comm -> Comm -> Comm)
+semiParser = do {reservedOp lis ";"; return (\ c1 c2 -> (Seq c1 c2))}
 
 comm :: Parser Comm
-comm = chainl1 asig semi -- parser de ';'
+comm = chainl1 asig semiParser
 
 asig :: Parser Comm 
 asig = try (do v <- varParse 
                reservedOp lis "=" 
                i <- intexp 
-               return (Eq v i)) <|> control
+               return (Let v i)) <|> control  
 
 control :: Parser Comm
-control = (try reservedNames lis "skip") <|> (try ifThenParser) <|> (try ifElseParser) <|> repParser
+control = try (skipParser) <|> (try (ifThenParser) <|> (try (ifElseParser) <|> repParser))
 
 ------------------------------------
 -- Función de parseo
