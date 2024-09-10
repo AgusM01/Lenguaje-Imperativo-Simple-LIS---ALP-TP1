@@ -75,6 +75,9 @@ iterm = chainl1 minus prodDivParser
 minus :: Parser (Exp Int)
 minus = chainl1 mm uminParser 
 
+--minus :: Parser (Exp Int)
+--minus = try (do {reservedOp lis "-"; m <- mm; return (UMinus m)}) <|> (mm)
+
 mm :: Parser (Exp Int)
 mm = try natParse <|> try varParse <|> try varPlusPlus <|> try varMinusMinus <|> parensParser
 
@@ -113,14 +116,13 @@ andParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
 andParser = do {reservedOp lis "&&"; return (\x y -> (And x y))}
 		
 notParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
-notParser = do {reservedOp lis "!"; return (\x y -> (Not x y))}
+notParser = do {reservedOp lis "!"; x <- bop; return (Not x)}
 
 opParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
 opParser = try 	(reservedOp lis "<"; return (\x y -> (Lt x y))) <|>
 		(try reservedOp lis ">"; return (\x y -> (Gt x y)) <|>
 		(try reservedOp lis "=="; return (\x y -> (Eq x y)) <|>
-		(try reservedOp lis "!="; return (\x y -> (NEq x y)) <|>
-		bdata))) -- ????
+		(try reservedOp lis "!="; return (\x y -> (NEq x y)))))
 
 boolexp :: Parser (Exp Bool)
 boolexp = chainl1 band orParser
@@ -129,7 +131,7 @@ band :: Parser (Exp Bool)
 band = chainl1 bnot andParser
 
 bnot :: Parser (Exp Bool) 
-bnot = chainl1 bop notParser
+bnot = try notParser <|> bop
 
 bop :: Parser (Exp Bool)
 bop = chainl1 bdata opParser
