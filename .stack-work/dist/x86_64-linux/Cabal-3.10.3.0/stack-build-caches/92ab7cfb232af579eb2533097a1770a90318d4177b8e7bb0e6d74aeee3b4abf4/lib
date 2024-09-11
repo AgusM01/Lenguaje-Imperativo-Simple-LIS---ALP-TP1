@@ -1,0 +1,26 @@
+/home/agustin/.ghcup/ghc/9.6.6/lib/ghc-9.6.6/lib/x86_64-linux-ghc-9.6.6/rts-1.0.2/include/ghcversion.h:
+  hash: 9032f6afc97dcddfe8c8b306639eb6f456e3f6667f3dd8268681f51bb77c8634
+? /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/.stack-work/dist/x86_64-linux/Cabal-3.10.3.0/build/autogen/Paths_TP1.hs
+: hash: 8edab4a9808489a9a298bbb6106e92d75699c1d36b405eb8b3a030267d62818e
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/CHANGELOG.md:
+  hash: 4d3313936a46bb30918048b369fb6aa8d4103afefb7b7a48ffbfb0d9806f3d6b
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/README.md:
+  hash: 8c50b647de6f8d234b50e47ecee815c185818dff55a5323a08828dd22c247648
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/TP1.cabal:
+  hash: f15ad80637afff84b758a1e961622e513ea5e72203ddb625d63af412671e7ac2
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/package.yaml:
+  hash: 8f10c45f5cc8350b81b12753a629ffde2dbf8f9eb1eb715011e140e977b581d9
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/AST.hs:
+  hash: 54600f9edfeaf67c00d06ddd22e67b4c1154040d60b1c5522f72a16af8c77cd4
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Eval1.hs:
+  hash: 503f3de110316a34a2740e00a53772f8af5c575bbfb51a421d4ae2325957c3e8
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Eval2.hs:
+  hash: c10cef9b0b1a3fbd19af7bf675c307351b89f38de7b340fea7d58ee722714c03
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Eval3.hs:
+  hash: f930f51958a9c3831a784d118e349ff65ba7eed57ced56a13410521284ac85ef
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/PPLis.hs:
+  hash: 2784405814952f2d1af05d96869417fd297fb591534e63fc47638334759cb917
+/home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Parser.hs:
+  hash: 9fcfc7ccd0e737f2fa8263190e7e4eea1c946b17c92d2b6b73ced9dfcf31c208
+/usr/include/stdc-predef.h:
+  hash: cb08cd5d4cc059a90833ac48a284d25016e8d56ded8ad4cd98d8ac59cc5053f3

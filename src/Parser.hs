@@ -153,10 +153,10 @@ notParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
 notParser = do {reservedOp lis "!"; x <- bop; return (Not x)}
 
 opParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
-opParser = try 	(reservedOp lis "<"; return (\x y -> (Lt x y))) <|>
-		(try reservedOp lis ">"; return (\x y -> (Gt x y)) <|>
-		(try reservedOp lis "=="; return (\x y -> (Eq x y)) <|>
-		(try reservedOp lis "!="; return (\x y -> (NEq x y)))))
+opParser =  try (do reservedOp lis "<"; return (\x y -> (Lt x y))) <|>
+		        try (do reservedOp lis ">"; return (\x y -> (Gt x y))) <|>
+		        try (do reservedOp lis "=="; return (\x y -> (Eq x y))) <|>
+		        try (do reservedOp lis "!="; return (\x y -> (NEq x y)))
 
 boolexp :: Parser (Exp Bool)
 boolexp = chainl1 band orParser
@@ -171,7 +171,7 @@ bop :: Parser (Exp Bool)
 bop = chainl1 bdata opParser
 
 bdata :: Parser (Exp Bool)
-bdata = try (reservedNames lis "true"; return BTrue) <|> (reservedNames lis "false"; return BFalse)
+bdata = try (do reservedNames lis "true"; return BTrue) <|> (do reservedNames lis "false"; return BFalse)
 
 -----------------------------------
 --- Parser de comandos
@@ -183,33 +183,32 @@ bdata = try (reservedNames lis "true"; return BTrue) <|> (reservedNames lis "fal
 -- control  ::= 'skip' | ’if’ boolexp ’{’ comm ’}’| ’if’ boolexp ’{’ comm ’}’ ’else’ ’{’ comm ’}’ | ’repeat’ ’{’ comm ’}’ ’until’ boolexp
 
 ifThenParser :: Parser (Comm)
-ifThenParser = 	do (reservedNames lis "if") 
-			b <- boolexp
-			symbol "{"
-			c <- comm
-			symbol "}"
-			return (IfThenElse b c Skip) -- mirar en AST, hay un pattern
-			 			
-	   
+ifThenParser = 	do reservedNames lis "if" 
+			             b <- boolexp
+			             symbol "{"
+			             c <- comm
+			             symbol "}"
+			             return (IfThenElse b c Skip) -- mirar en AST, hay un pattern
+
 ifElseParser :: Parser (Comm)
-ifElseParser = do (reservedNames lis "if") 
-			b <- boolexp
-			symbol "{" 
-			c1 <- comm
-			symbol "}"
-			symbol "{"
-			c2 <- comm
-			symbol "}"
-			return (IfThenElse b c1 c2) 
+ifElseParser = do reservedNames lis "if" 
+			            b <- boolexp
+			            symbol "{" 
+			            c1 <- comm
+			            symbol "}"
+			            symbol "{"
+			            c2 <- comm
+			            symbol "}"
+			            return (IfThenElse b c1 c2) 
 
 repParser :: Parser (Comm)
-repParser = do (reservedNames lis "repeat")
-		symbol "{" 
-		c <- comm
-		symbol "}"
-		reservedNames lis "until"
-		b <- boolExp
-		return (RepeatUntil c b)
+repParser = do reservedNames lis "repeat"
+		           symbol "{" 
+	          	 c <- comm
+	             symbol "}"
+	             reservedNames lis "until"
+	             b <- boolExp
+	             return (RepeatUntil c b)
 		
 skipParser :: Parser (Comm)
 skipParser = do {reservedNames lis "skip"; return Skip}
