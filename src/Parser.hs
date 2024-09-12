@@ -153,10 +153,10 @@ notParser :: Parser (Exp Bool)
 notParser = do {reservedOp lis "!"; x <- bop; return (Not x)}
 
 opParser :: Parser (Exp Bool)
-opParser =  try (do reservedOp lis "<"    ; x <- intexp ; y <- intexp ; return (Lt x y))    <|>
-		        try ((do reservedOp lis ">"   ; x <- intexp ; y <- intexp ; return (Gt x y)))   <|>
-		        try ((do reservedOp lis "=="  ; x <- intexp ; y <- intexp ; return (Eq x y)))  <|>
-		        try (do reservedOp lis "!="   ; x <- intexp ; y <- intexp ; return (NEq x y))
+opParser =  try (do  x <- intexp  ; reservedOp lis "<"    ; y <- intexp ; return (Lt x y))    <|>
+		        try ((do x <- intexp  ; reservedOp lis ">"    ; y <- intexp ; return (Gt x y)))   <|>
+		        try ((do x <- intexp  ; reservedOp lis "=="   ; y <- intexp ; return (Eq x y)))   <|>
+		        try (do  x <- intexp  ; reservedOp lis "!="   ; y <- intexp ; return (NEq x y))
 
 boolexp :: Parser (Exp Bool)
 boolexp = chainl1 band orParser
