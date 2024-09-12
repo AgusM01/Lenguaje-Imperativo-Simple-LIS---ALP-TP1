@@ -2,6 +2,8 @@
   hash: 9032f6afc97dcddfe8c8b306639eb6f456e3f6667f3dd8268681f51bb77c8634
 ? /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/.stack-work/dist/x86_64-linux/Cabal-3.10.3.0/build/autogen/Paths_TP1.hs
 : hash: 8edab4a9808489a9a298bbb6106e92d75699c1d36b405eb8b3a030267d62818e
+? /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/.stack-work/dist/x86_64-linux/Cabal-3.10.3.0/build/autogen/cabal_macros.h
+: hash: 4317806cd2acc0a0906d820852e30a2c42037eb79e26b1dec7798f008cae8baa
 /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/CHANGELOG.md:
   hash: 4d3313936a46bb30918048b369fb6aa8d4103afefb7b7a48ffbfb0d9806f3d6b
 /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/README.md:
@@ -21,6 +23,6 @@
 /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/PPLis.hs:
   hash: 2784405814952f2d1af05d96869417fd297fb591534e63fc47638334759cb917
 /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Parser.hs:
-  hash: 9fcfc7ccd0e737f2fa8263190e7e4eea1c946b17c92d2b6b73ced9dfcf31c208
+  hash: 2e9f5da5f3f70b1c6173a5df1bf3da8f2db329d17a771cdd5c0dade09764f3c5
 /usr/include/stdc-predef.h:
   hash: cb08cd5d4cc059a90833ac48a284d25016e8d56ded8ad4cd98d8ac59cc5053f3

@@ -1,3 +1,9 @@
+/home/agustin/.ghcup/ghc/9.6.6/lib/ghc-9.6.6/lib/x86_64-linux-ghc-9.6.6/rts-1.0.2/include/ghcversion.h:
+  hash: 9032f6afc97dcddfe8c8b306639eb6f456e3f6667f3dd8268681f51bb77c8634
+? /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/.stack-work/dist/x86_64-linux/Cabal-3.10.3.0/build/TP1-exe/autogen/Paths_TP1.hs
+: hash: 94d29809b0bb6a09c6dd878a494e4262c7975505d9c6b6f2493b16cc786a64bd
+? /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/.stack-work/dist/x86_64-linux/Cabal-3.10.3.0/build/TP1-exe/autogen/cabal_macros.h
+: hash: 4a1bbbdc41ff6c9da187a61e6a810b9445df124e8798d66a15adb1ecae20842d
 /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/CHANGELOG.md:
   hash: 4d3313936a46bb30918048b369fb6aa8d4103afefb7b7a48ffbfb0d9806f3d6b
 /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/README.md:
@@ -8,3 +14,5 @@
   hash: 13c300a76154b56d24feb5f398c861528ef752719134f9e513bff98cc555cf08
 /home/agustin/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/package.yaml:
   hash: 8f10c45f5cc8350b81b12753a629ffde2dbf8f9eb1eb715011e140e977b581d9
+/usr/include/stdc-predef.h:
+  hash: cb08cd5d4cc059a90833ac48a284d25016e8d56ded8ad4cd98d8ac59cc5053f3

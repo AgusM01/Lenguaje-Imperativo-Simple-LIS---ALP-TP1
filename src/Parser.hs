@@ -1,4 +1,5 @@
 module Parser where
+{-# HLINT ignore "Use <$>" #-}
 
 import           Text.ParserCombinators.Parsec
 import           Text.Parsec.Token
@@ -73,7 +74,10 @@ iterm :: Parser (Exp Int)
 iterm = chainl1 minus prodDivParser 
 
 minus :: Parser (Exp Int)
-minus = chainl1 mm uminParser 
+minus = try (do reservedOp lis  "-"
+                m <- mm 
+                return (UMinus m))
+                <|> mm            
 
 --minus :: Parser (Exp Int)
 --minus = try (do {reservedOp lis "-"; m <- mm; return (UMinus m)}) <|> (mm)
@@ -88,14 +92,14 @@ sumRestParser = try (do reservedOp lis "+"
                            return (\x y -> Minus x y)
 
 prodDivParser :: Parser (Exp Int -> Exp Int -> Exp Int)
-sumRestParser = try (do reservedOp lis "*"
+prodDivParser = try (do reservedOp lis "*"
                         return (\x y -> Times x y))
                     <|> do reservedOp lis "/"
                            return (\x y -> Div x y)
 
 natParse :: Parser (Exp Int) 
 natParse = do n <- natural lis
-              return (Const n)
+              return (Const (fromIntegral n))
 
 
                    
@@ -112,9 +116,9 @@ varMinusMinus = do v <- identifier lis
                    return (VarDec v)
 
 parensParser :: Parser (Exp Int) 
-parensParser =  do symbol "("
+parensParser =  do _ <- symbol lis "("
                    i <- intexp
-                   symbol ")"
+                   _ <- symbol lis ")"
                    return i
 
 
@@ -123,14 +127,10 @@ parensParser =  do symbol "("
 -- identifier toma la especificacion de tokens que da lis y generará un string. Aquí checkeara si por ejemplo la variable no es una palabra reservada.
 -- Si identifier lee una de las palabras reservadas de lis, falla.
 
-variableParser :: Parser (Exp Int)
-variableParser = do v <- identifier lis 
-                    return (Var v)
+varParse :: Parser (Exp Int)
+varParse = do v <- identifier lis 
+              return (Var v)
 
--- Parser de  - intexp
-uminParser :: Parser (Exp Int -> Exp Int)
-uminParser = do reservedOp lis  "-"
-                return (\e -> UMinus e) 
 ------------------------------------
 --- Parser de expresiones booleanas
 ------------------------------------
@@ -138,25 +138,25 @@ uminParser = do reservedOp lis  "-"
 -- Desambigüamos la gramática
 -- boolexp  ::= boolexp '||' band | band 
 -- band     ::= band '&&' bnot | bnot 
--- bnot     ::= '!' bop | bop  
--- bop      ::= bop ('<' bdata | '>' bdata | '!=' bdata | '==' bdata) | bdata
+-- bnot     ::= '!' bop | bop 
+-- bop      ::= intexp ('<' intexp | '>' intexp | '!=' intexp | '==' intexp) | bdata 
 -- bdata    ::= 'true' | 'false' 
 
 
 orParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
 orParser = do {reservedOp lis "||"; return (\x y -> (Or x y))}
-				
+
 andParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
 andParser = do {reservedOp lis "&&"; return (\x y -> (And x y))}
-		
-notParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
+
+notParser :: Parser (Exp Bool)
 notParser = do {reservedOp lis "!"; x <- bop; return (Not x)}
 
-opParser :: Parser (Exp Bool -> Exp Bool -> Exp Bool)
-opParser =  try (do reservedOp lis "<"; return (\x y -> (Lt x y))) <|>
-		        try (do reservedOp lis ">"; return (\x y -> (Gt x y))) <|>
-		        try (do reservedOp lis "=="; return (\x y -> (Eq x y))) <|>
-		        try (do reservedOp lis "!="; return (\x y -> (NEq x y)))
+opParser :: Parser (Exp Bool)
+opParser =  try (do reservedOp lis "<"    ; x <- intexp ; y <- intexp ; return (Lt x y))    <|>
+		        try ((do reservedOp lis ">"   ; x <- intexp ; y <- intexp ; return (Gt x y)))   <|>
+		        try ((do reservedOp lis "=="  ; x <- intexp ; y <- intexp ; return (Eq x y)))  <|>
+		        try (do reservedOp lis "!="   ; x <- intexp ; y <- intexp ; return (NEq x y))
 
 boolexp :: Parser (Exp Bool)
 boolexp = chainl1 band orParser
@@ -168,10 +168,10 @@ bnot :: Parser (Exp Bool)
 bnot = try notParser <|> bop
 
 bop :: Parser (Exp Bool)
-bop = chainl1 bdata opParser
+bop = try opParser <|> bdata
 
 bdata :: Parser (Exp Bool)
-bdata = try (do reservedNames lis "true"; return BTrue) <|> (do reservedNames lis "false"; return BFalse)
+bdata = try (do reserved lis "true"; return BTrue) <|> (do reserved lis "false"; return BFalse)
 
 -----------------------------------
 --- Parser de comandos
@@ -182,45 +182,45 @@ bdata = try (do reservedNames lis "true"; return BTrue) <|> (do reservedNames li
 -- asig     ::= var '=' intexp | control 
 -- control  ::= 'skip' | ’if’ boolexp ’{’ comm ’}’| ’if’ boolexp ’{’ comm ’}’ ’else’ ’{’ comm ’}’ | ’repeat’ ’{’ comm ’}’ ’until’ boolexp
 
-ifThenParser :: Parser (Comm)
-ifThenParser = 	do reservedNames lis "if" 
-			             b <- boolexp
-			             symbol "{"
-			             c <- comm
-			             symbol "}"
-			             return (IfThenElse b c Skip) -- mirar en AST, hay un pattern
+ifThenParser :: Parser Comm
+ifThenParser = do   reserved lis "if" 
+                    b <- boolexp
+                    _ <- symbol lis "{"
+                    c <- comm
+                    _ <- symbol lis "}"
+                    return (IfThen b c) -- mirar en AST, hay un pattern
 
-ifElseParser :: Parser (Comm)
-ifElseParser = do reservedNames lis "if" 
-			            b <- boolexp
-			            symbol "{" 
-			            c1 <- comm
-			            symbol "}"
-			            symbol "{"
-			            c2 <- comm
-			            symbol "}"
-			            return (IfThenElse b c1 c2) 
+ifElseParser :: Parser Comm
+ifElseParser = do   reserved lis "if" 
+                    b <- boolexp
+                    _ <- symbol lis "{" 
+                    c1 <- comm
+                    _ <- symbol lis "}"
+                    _ <- symbol lis "{"
+                    c2 <- comm
+                    _ <- symbol lis "}"
+                    return (IfThenElse b c1 c2) 
 
-repParser :: Parser (Comm)
-repParser = do reservedNames lis "repeat"
-		           symbol "{" 
-	          	 c <- comm
-	             symbol "}"
-	             reservedNames lis "until"
-	             b <- boolExp
-	             return (RepeatUntil c b)
-		
-skipParser :: Parser (Comm)
-skipParser = do {reservedNames lis "skip"; return Skip}
+repParser :: Parser Comm
+repParser = do  reserved lis "repeat"
+                _ <- symbol lis "{" 
+                c <- comm
+                _ <- symbol lis "}"
+                reserved lis "until"
+                b <- boolexp
+                return (RepeatUntil c b)
 
-semiParser :: Parer (Comm -> Comm -> Comm)
+skipParser :: Parser Comm
+skipParser = do {reserved lis "skip"; return Skip}
+
+semiParser :: Parser (Comm -> Comm -> Comm)
 semiParser = do {reservedOp lis ";"; return (\ c1 c2 -> (Seq c1 c2))}
 
 comm :: Parser Comm
 comm = chainl1 asig semiParser
 
 asig :: Parser Comm 
-asig = try (do v <- varParse 
+asig = try (do v <- identifier lis 
                reservedOp lis "=" 
                i <- intexp 
                return (Let v i)) <|> control  
