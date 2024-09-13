@@ -61,31 +61,42 @@ evalExp e s = case e of
                     Var v     -> lookfor v s :!: s
                     UMinus i  ->  let ev = evalExp i s
                                   in -(T.fst ev) :!: T.snd ev 
-                    Plus x y  ->  f x y (+)
-                    Minus x y ->  f x y (-)
-                    Times x y ->  f x y (*)
-                    Div x y   ->  f x y (/)
+                    Plus x y  ->  let e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                  in e' + e'' :!: s''
+                    Minus x y ->  let e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                  in e' - e'' :!: s''
+                    Times x y ->  let e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                  in e' * e'' :!: s''
+                    Div x y   ->  let e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                  in div e' e'' :!: s''
                     VarInc v  ->  let x = lookfor v s
                                   in x + 1 :!: update v (x + 1) s
                     VarDec v  ->  let x = lookfor v s
                                   in x - 1 :!: update v (x - 1) s
                     BTrue     -> True :!: s 
                     BFalse    -> False :!: s 
-                    Lt x y    -> f x y (<)
-                    Gt x y    -> f x y (>)
-                    And x y   -> f x y (&&) 
-                    Or x y    -> f x y (||)
+                    Lt x y    -> let  e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                 in   (e' < e'') :!: s''
+                    Gt x y    -> let  e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                 in   (e' > e'') :!: s''
+                    And x y   -> let  e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                 in   (e' && e'') :!: s'' 
+                    Or x y    -> let  e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                 in   (e' || e'') :!: s''
                     Not x     ->  let ev = evalExp x s
                                   in not(T.fst ev) :!: T.snd ev
-                    Eq x y    -> f x y (==)
-                    NEq x y   -> f x y (!=)
+                    Eq x y    -> let  e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                 in   (e' == e'') :!: s''
+                    NEq x y   -> let  e' :!: s' = evalExp x s
+                                      (e'' :!: s'') = evalExp y s'
+                                 in   (e' /= e'') :!: s''
                     
-
-                where f x y op =  let e' :!: s' = evalExp x s
-                                      e'' :!: s'' = evalExp y s'
-                                  in e' op e'' :!: s''
-
-g :: (Num a, Ord a, Eq a) => a -> a -> State -> (a -> a) -> Pair a State
-g x y op s  =   let e' :!: s' = evalExp x s
-                    e'' :!: s'' = evalExp y s'
-                in e' op e'' :!: s''
