@@ -27,7 +27,7 @@ lookfor v s = case M.lookup v s of
 -- Cambia el valor de una variable en un estado
 -- Completar la definición
 update :: Variable -> Int -> State -> State
-update v i s = M.adjust (\x -> i) v s  
+update v i s = M.insert v i s
 
 -- Evalúa un programa en el estado vacío
 eval :: Comm -> State

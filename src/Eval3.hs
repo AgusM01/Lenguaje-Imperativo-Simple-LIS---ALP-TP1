@@ -1,3 +1,7 @@
+{-# HLINT ignore "Use first" #-}
+{-# HLINT ignore "Use const" #-}
+{-# HLINT ignore "Redundant bracket" #-}
+
 module Eval3
   ( eval
   , State
@@ -9,7 +13,7 @@ import qualified Data.Map.Strict               as M
 import           Data.Strict.Tuple             as T 
 import           Prelude                       as P 
 
--- Estados 
+-- Estados  
 type State = (M.Map Variable Int, String)
 
 -- Estado vacío
@@ -20,12 +24,14 @@ initState = (M.empty, "")
 -- Busca el valor de una variable en un estado
 -- Completar la definición
 lookfor :: Variable -> State -> Either Error Int
-lookfor v s = undefined
+lookfor v s = case M.lookup v (P.fst s) of
+                    Just a -> Right a
+                    Nothing -> Left UndefVar
 
 -- Cambia el valor de una variable en un estado
 -- Completar la definición
 update :: Variable -> Int -> State -> State
-update v i s = M.adjust (\x -> i) v (Prelude.snd s)
+update v i s = (M.insert v i (P.fst s), (P.snd s))
 
 -- Agrega una traza dada al estado
 -- Completar la definición
@@ -51,14 +57,14 @@ stepComm c s =  case c of
                 Skip ->     Right(Skip :!: addTrace "Skip" s)
                 Let v e ->  case (evalExp e s) of
                             Left err -> Left err
-                            Right ex -> Right(Skip :!: addTrace ("Let "++v++" "++(show ex))  
+                            Right ex -> Right(Skip :!: addTrace ("Let "++v++" "++(show (T.fst ex)++ "||"))  
                                                                 (update v (T.fst ex) s))
-                
+
                 
                 Seq c1 c2 -> if c1 == Skip then  Right(c2 :!: s)
                               else  case (stepComm c1 s) of
                                     Left err -> Left err
-                                    Right t -> Right(Seq (T.fst t) c2 :!: (T.snd t))
+                                    Right t -> Right((Seq (T.fst t) c2) :!: (T.snd t))
                                     
                 IfThenElse e c1 c2 -> case (evalExp e s) of
                                       Left err -> Left err
@@ -70,7 +76,7 @@ stepComm c s =  case c of
 -- Completar la definición
 evalExp :: Exp a -> State -> Either Error (Pair a State)
 evalExp e s = case e of 
-                    Const i   -> Right(i :!: s) 
+                    Const i   ->  Right(i :!: s) 
                     Var v     ->  case lookfor v s of
                                   Left err -> Left err
                                   Right i -> Right(i :!: s)	
@@ -100,10 +106,12 @@ evalExp e s = case e of
                                                                           else Right((div e' e'') :!: s'')
                     VarInc v  ->  case lookfor v s of
                     		  Left err -> Left err
-                    		  Right x -> Right(x + 1 :!: update v (x + 1) s)
+                    		  Right x -> Right (x + 1 :!: addTrace ("Let "++v++" "++(show (x + 1)) ++ "||")  
+                                                                (update v (x+1) s))
                     VarDec v  ->  case lookfor v s of
                     		  Left err -> Left err
-                    		  Right x -> Right(x - 1 :!: update v (x - 1) s)
+                    		  Right x -> Right(x - 1 :!: addTrace ("Let "++v++" "++(show (x - 1)) ++ "||")  
+                                                                (update v (x - 1) s))
                     BTrue     -> Right(True :!: s) 
                     BFalse    -> Right(False :!: s)
                     Lt x y    -> case evalExp x s of

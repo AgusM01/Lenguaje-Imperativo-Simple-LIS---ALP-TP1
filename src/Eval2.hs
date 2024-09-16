@@ -26,7 +26,7 @@ lookfor v s = case M.lookup v s of
 -- Cambia el valor de una variable en un estado
 -- Completar la definición
 update :: Variable -> Int -> State -> State
-update v i s = M.adjust (\x -> i) v s
+update v i s = M.insert v i s
 
 -- Evalúa un programa en el estado vacío
 eval :: Comm -> Either Error State
@@ -66,7 +66,7 @@ stepComm c s =  case c of
 -- Completar la definición
 evalExp :: Exp a -> State -> Either Error (Pair a State)
 evalExp e s = case e of 
-                    Const i   -> Right(i :!: s) 
+                    Const i   -> Right (i :!: s) 
                     Var v     ->  case lookfor v s of
                                   Left err -> Left err
                                   Right i -> Right(i :!: s)	

@@ -62,7 +62,7 @@ lis = makeTokenParser
 -----------------------------------
 
 -- Desambigüamos la gramática:
--- intexp ::= intexp '+' term | intexp '-' term | term
+-- intexp ::= intexp '+' iterm | intexp '-' iterm | iterm 
 -- iterm   ::= iterm '*' minus | iterm '/' minus | minus  
 -- minus  ::= '-u' mm | mm  
 -- mm     ::= nat | var | var '++' | var '--' | '('intexp')'  
@@ -83,7 +83,7 @@ minus = try (do reservedOp lis  "-"
 --minus = try (do {reservedOp lis "-"; m <- mm; return (UMinus m)}) <|> (mm)
 
 mm :: Parser (Exp Int)
-mm = try natParse <|> try varParse <|> try varPlusPlus <|> try varMinusMinus <|> parensParser
+mm = try natParse  <|> try varPlusPlus <|> try varMinusMinus <|> try varParse <|> parensParser
 
 sumRestParser :: Parser (Exp Int -> Exp Int -> Exp Int)
 sumRestParser = try (do reservedOp lis "+"
@@ -105,14 +105,12 @@ natParse = do n <- natural lis
                    
 varPlusPlus :: Parser (Exp Int)
 varPlusPlus = do v <- identifier lis
-                 reservedOp lis "+"
-                 reservedOp lis "+"
+                 reservedOp lis "++"
                  return (VarInc v)
 
 varMinusMinus :: Parser (Exp Int)
 varMinusMinus = do v <- identifier lis
-                   reservedOp lis "-"
-                   reservedOp lis "-"
+                   reservedOp lis "--"
                    return (VarDec v)
 
 parensParser :: Parser (Exp Int) 
