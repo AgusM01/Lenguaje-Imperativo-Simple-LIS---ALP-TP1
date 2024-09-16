@@ -25,7 +25,7 @@ lookfor v s = undefined
 -- Cambia el valor de una variable en un estado
 -- Completar la definición
 update :: Variable -> Int -> State -> State
-update = undefined
+update v i s = M.adjust (\x -> i) v (Prelude.snd s)
 
 -- Agrega una traza dada al estado
 -- Completar la definición
@@ -47,9 +47,98 @@ stepCommStar c    s = do
 -- Evalúa un paso de un comando en un estado dado
 -- Completar la definición
 stepComm :: Comm -> State -> Either Error (Pair Comm State)
-stepComm = undefined
-
+stepComm c s =  case c of
+                Skip ->     Right(Skip :!: addTrace "Skip" s)
+                Let v e ->  case (evalExp e s) of
+                            Left err -> Left err
+                            Right ex -> Right(Skip :!: addTrace ("Let "++v++" "++(show ex))  
+                                                                (update v (T.fst ex) s))
+                
+                
+                Seq c1 c2 -> if c1 == Skip then  Right(c2 :!: s)
+                              else  case (stepComm c1 s) of
+                                    Left err -> Left err
+                                    Right t -> Right(Seq (T.fst t) c2 :!: (T.snd t))
+                                    
+                IfThenElse e c1 c2 -> case (evalExp e s) of
+                                      Left err -> Left err
+                                      Right ev -> if T.fst ev then Right(c1 :!: T.snd ev) 
+                                                              else Right(c2 :!: T.snd ev)
+                RepeatUntil c e -> Right(Seq c (IfThenElse e Skip (RepeatUntil c e)) :!: s) 
+                
 -- Evalúa una expresión
 -- Completar la definición
 evalExp :: Exp a -> State -> Either Error (Pair a State)
-evalExp = undefined
+evalExp e s = case e of 
+                    Const i   -> Right(i :!: s) 
+                    Var v     ->  case lookfor v s of
+                                  Left err -> Left err
+                                  Right i -> Right(i :!: s)	
+                    UMinus i  ->  case evalExp i s of
+                                  Left err -> Left err
+                                  Right ev -> Right(-(T.fst ev) :!: T.snd ev) 
+                    Plus x y  ->  case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' + e'') :!: s'')	
+                    Minus x y ->  case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' - e'') :!: s'')
+                    Times x y ->  case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' * e'') :!: s'')
+                    Div x y   ->  case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                        Left err -> Left err
+                                        Right(e'' :!: s'') -> if e'' == 0 then Left(DivByZero) 
+                                                                          else Right((div e' e'') :!: s'')
+                    VarInc v  ->  case lookfor v s of
+                    		  Left err -> Left err
+                    		  Right x -> Right(x + 1 :!: update v (x + 1) s)
+                    VarDec v  ->  case lookfor v s of
+                    		  Left err -> Left err
+                    		  Right x -> Right(x - 1 :!: update v (x - 1) s)
+                    BTrue     -> Right(True :!: s) 
+                    BFalse    -> Right(False :!: s)
+                    Lt x y    -> case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' < e'') :!: s'')
+                    Gt x y    -> case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' > e'') :!: s'')
+                    And x y   -> case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' && e'') :!: s'')
+                    Or x y    -> case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' || e'') :!: s'')
+                    Not x     ->  case evalExp x s of
+                    		  Left err -> Left err
+                    		  Right ev -> Right(not(T.fst ev) :!: T.snd ev)
+                    Eq x y    -> case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' == e'') :!: s'')
+                    NEq x y   -> case evalExp x s of
+                                  Left err -> Left err
+                                  Right (e' :!: s') ->  case evalExp y s' of
+                                                        Left err -> Left err
+                                                        Right(e'' :!: s'') -> Right((e' /= e'') :!: s'')
+                    
+                		
+

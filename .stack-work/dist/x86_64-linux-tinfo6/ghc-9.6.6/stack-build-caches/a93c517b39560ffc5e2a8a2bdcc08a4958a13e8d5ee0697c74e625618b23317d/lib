@@ -2,8 +2,6 @@
 : hash: 9032f6afc97dcddfe8c8b306639eb6f456e3f6667f3dd8268681f51bb77c8634
 ? /home/martin/LCC/ALP/Lenguaje-Imperativo-Simple-LIS---ALP-TP1/.stack-work/dist/x86_64-linux-tinfo6/ghc-9.6.6/build/autogen/Paths_TP1.hs
 : hash: 44bd2352923d66138636898efba5cd1d6c5fa5b5c7c608e8f981cab480961172
-? /home/martin/LCC/ALP/Lenguaje-Imperativo-Simple-LIS---ALP-TP1/.stack-work/dist/x86_64-linux-tinfo6/ghc-9.6.6/build/autogen/cabal_macros.h
-: hash: 8be42f7b05cf7a7d0ba5006da2eb7902f9e4793fa7f49c377567b18e1bad85c0
 /home/martin/LCC/ALP/Lenguaje-Imperativo-Simple-LIS---ALP-TP1/CHANGELOG.md:
   hash: 4d3313936a46bb30918048b369fb6aa8d4103afefb7b7a48ffbfb0d9806f3d6b
 /home/martin/LCC/ALP/Lenguaje-Imperativo-Simple-LIS---ALP-TP1/README.md:
@@ -19,7 +17,7 @@
 /home/martin/LCC/ALP/Lenguaje-Imperativo-Simple-LIS---ALP-TP1/src/Eval2.hs:
   hash: 2d1c886b178b0b8d978526eea054d96badf803daabc581ec5abde728bae20837
 /home/martin/LCC/ALP/Lenguaje-Imperativo-Simple-LIS---ALP-TP1/src/Eval3.hs:
-  hash: f930f51958a9c3831a784d118e349ff65ba7eed57ced56a13410521284ac85ef
+  hash: 5bc78109d518dfc935f6e93083ffd93016950b4e4e8bca86648b234e830bddb9
 /home/martin/LCC/ALP/Lenguaje-Imperativo-Simple-LIS---ALP-TP1/src/PPLis.hs:
   hash: 2784405814952f2d1af05d96869417fd297fb591534e63fc47638334759cb917
 /home/martin/LCC/ALP/Lenguaje-Imperativo-Simple-LIS---ALP-TP1/src/Parser.hs:
