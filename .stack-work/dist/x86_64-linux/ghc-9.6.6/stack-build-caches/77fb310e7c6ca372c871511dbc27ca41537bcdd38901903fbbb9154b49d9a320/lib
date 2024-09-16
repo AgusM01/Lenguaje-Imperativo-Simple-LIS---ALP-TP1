@@ -1,0 +1,28 @@
+/home/agusm01/.ghcup/ghc/9.6.6/lib/ghc-9.6.6/lib/x86_64-linux-ghc-9.6.6/rts-1.0.2/include/ghcversion.h:
+  hash: 9032f6afc97dcddfe8c8b306639eb6f456e3f6667f3dd8268681f51bb77c8634
+? /home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/.stack-work/dist/x86_64-linux/ghc-9.6.6/build/autogen/Paths_TP1.hs
+: hash: 951a85ffd7aa7460c1485ab03b4589578a86bde0b5c61fb23032d5c23f5d64bd
+? /home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/.stack-work/dist/x86_64-linux/ghc-9.6.6/build/autogen/cabal_macros.h
+: hash: 4bb6cbb411274b92b52cb51fa4efa38df997b5004f28cc223b55a4ce32d538fe
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/CHANGELOG.md:
+  hash: 4d3313936a46bb30918048b369fb6aa8d4103afefb7b7a48ffbfb0d9806f3d6b
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/README.md:
+  hash: 8c50b647de6f8d234b50e47ecee815c185818dff55a5323a08828dd22c247648
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/TP1.cabal:
+  hash: f15ad80637afff84b758a1e961622e513ea5e72203ddb625d63af412671e7ac2
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/package.yaml:
+  hash: 8f10c45f5cc8350b81b12753a629ffde2dbf8f9eb1eb715011e140e977b581d9
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/AST.hs:
+  hash: 54600f9edfeaf67c00d06ddd22e67b4c1154040d60b1c5522f72a16af8c77cd4
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Eval1.hs:
+  hash: e504738e0124fa69b5d0377817ad468f3baf5b69386bdf36bc1d5e1a4ce891af
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Eval2.hs:
+  hash: 2d1c886b178b0b8d978526eea054d96badf803daabc581ec5abde728bae20837
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Eval3.hs:
+  hash: f930f51958a9c3831a784d118e349ff65ba7eed57ced56a13410521284ac85ef
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/PPLis.hs:
+  hash: 2784405814952f2d1af05d96869417fd297fb591534e63fc47638334759cb917
+/home/agusm01/LCC/3erAño/ALP/2024/2024-enunciado-tp-1/2024-enunciado/TP1/src/Parser.hs:
+  hash: ce5fa44e6327789cf2db8c5242182880033539768164486334468776e9f22fbf
+/usr/include/stdc-predef.h:
+  hash: 8db4f65e62cade8ae4d9b77960ee6aee093255acc1b637e3fb37d79179733b15

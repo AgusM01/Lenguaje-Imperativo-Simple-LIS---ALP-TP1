@@ -6,7 +6,8 @@ where
 
 import           AST
 import qualified Data.Map.Strict               as M
-import           Data.Strict.Tuple
+import           Data.Strict.Tuple             as T 
+import           Prelude                       as P 
 
 -- Estados 
 type State = (M.Map Variable Int, String)
@@ -14,12 +15,12 @@ type State = (M.Map Variable Int, String)
 -- Estado vacío
 -- Completar la definición
 initState :: State
-initState = undefined
+initState = (M.empty, "")
 
 -- Busca el valor de una variable en un estado
 -- Completar la definición
 lookfor :: Variable -> State -> Either Error Int
-lookfor = undefined
+lookfor v s = undefined
 
 -- Cambia el valor de una variable en un estado
 -- Completar la definición
@@ -29,7 +30,7 @@ update = undefined
 -- Agrega una traza dada al estado
 -- Completar la definición
 addTrace :: String -> State -> State
-addTrace = undefined
+addTrace str s = (P.fst s, (P.snd s) ++ str)
 
 -- Evalúa un programa en el estado vacío
 eval :: Comm -> Either Error State
