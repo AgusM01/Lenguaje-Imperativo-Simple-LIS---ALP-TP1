@@ -59,7 +59,7 @@ stepComm c s =  case c of
                                       Left err -> Left err
                                       Right ev -> if T.fst ev then Right(c1 :!: T.snd ev) 
                                                               else Right(c2 :!: T.snd ev)
-                RepeatUntil c e -> Right(Seq c (IfThenElse e Skip (RepeatUntil c e)) :!: s) 
+                RepeatUntil r e -> Right(Seq r (IfThenElse e Skip (RepeatUntil r e)) :!: s) 
                    
 
 -- Evalúa una expresión
@@ -69,7 +69,7 @@ evalExp e s = case e of
                     Const i   -> Right (i :!: s) 
                     Var v     ->  case lookfor v s of
                                   Left err -> Left err
-                                  Right i -> Right(i :!: s)	
+                                  Right i -> Right(i :!: s)
                     UMinus i  ->  case evalExp i s of
                                   Left err -> Left err
                                   Right ev -> Right(-(T.fst ev) :!: T.snd ev) 
@@ -77,7 +77,7 @@ evalExp e s = case e of
                                   Left err -> Left err
                                   Right (e' :!: s') ->  case evalExp y s' of
                                                         Left err -> Left err
-                                                        Right(e'' :!: s'') -> Right((e' + e'') :!: s'')	
+                                                        Right(e'' :!: s'') -> Right((e' + e'') :!: s'')
                     Minus x y ->  case evalExp x s of
                                   Left err -> Left err
                                   Right (e' :!: s') ->  case evalExp y s' of
@@ -95,11 +95,11 @@ evalExp e s = case e of
                                         Right(e'' :!: s'') -> if e'' == 0 then Left(DivByZero) 
                                                                           else Right((div e' e'') :!: s'')
                     VarInc v  ->  case lookfor v s of
-                    		  Left err -> Left err
-                    		  Right x -> Right(x + 1 :!: update v (x + 1) s)
+                                  Left err -> Left err
+                                  Right x -> Right(x + 1 :!: update v (x + 1) s)
                     VarDec v  ->  case lookfor v s of
-                    		  Left err -> Left err
-                    		  Right x -> Right(x - 1 :!: update v (x - 1) s)
+                                  Left err -> Left err
+                                  Right x -> Right(x - 1 :!: update v (x - 1) s)
                     BTrue     -> Right(True :!: s) 
                     BFalse    -> Right(False :!: s)
                     Lt x y    -> case evalExp x s of
@@ -123,8 +123,8 @@ evalExp e s = case e of
                                                         Left err -> Left err
                                                         Right(e'' :!: s'') -> Right((e' || e'') :!: s'')
                     Not x     ->  case evalExp x s of
-                    		  Left err -> Left err
-                    		  Right ev -> Right(not(T.fst ev) :!: T.snd ev)
+                                  Left err -> Left err
+                                  Right ev -> Right(not(T.fst ev) :!: T.snd ev)
                     Eq x y    -> case evalExp x s of
                                   Left err -> Left err
                                   Right (e' :!: s') ->  case evalExp y s' of
@@ -135,5 +135,3 @@ evalExp e s = case e of
                                   Right (e' :!: s') ->  case evalExp y s' of
                                                         Left err -> Left err
                                                         Right(e'' :!: s'') -> Right((e' /= e'') :!: s'')
-                    
-                		
